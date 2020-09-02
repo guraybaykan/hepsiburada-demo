@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HepsiBurada.Simulator
 {
@@ -14,31 +15,28 @@ namespace HepsiBurada.Simulator
             _lineNumber = lineNumber;
         }
 
-        public void GetCommand()
+        public (CommandType, IList<string>) GetCommand()
         {
             var parsedLine = ParseLine();
-            if(Enum.TryParse(parsedLine[0], out CommandType commandType))
+            if (Enum.TryParse(parsedLine[0], out CommandType commandType))
             {
-
+                return (commandType, parsedLine.Skip(1).Take(parsedLine.Count -1).ToArray());
             }
-            else
-            {
-                System.Console.WriteLine($"err -> {commandType}");
-            }
+            throw new InvalidOperationException($"Invalid Commmand at line:{_lineNumber}");
         }
 
         private IList<string> ParseLine()
         {
-            if(string.IsNullOrWhiteSpace(_line))
+            if (string.IsNullOrWhiteSpace(_line))
             {
-                throw new InvalidCastException($"Empty line at line:{_lineNumber}");
+                throw new InvalidOperationException($"Empty line at line:{_lineNumber}");
             }
 
             var parsedLine = _line.Split(" ");
 
-            if(parsedLine is null || parsedLine.Length < 2)
+            if (parsedLine is null || parsedLine.Length < 2)
             {
-                throw new InvalidCastException($"Syntax error at line:{_lineNumber}");
+                throw new InvalidOperationException($"Syntax error at line:{_lineNumber}");
             }
 
             return parsedLine;
