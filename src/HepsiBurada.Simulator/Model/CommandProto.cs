@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HepsiBurada.Simulator
+namespace HepsiBurada.Simulator.Model
 {
     public class CommandProto
     {
