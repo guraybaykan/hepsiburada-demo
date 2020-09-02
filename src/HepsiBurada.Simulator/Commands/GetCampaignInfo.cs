@@ -3,10 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using HepsiBurada.Simulator.Model;
 
 namespace HepsiBurada.Simulator.Commands
 {
-    public class GetCampaignInfo : IRequest<Unit>
+    public class GetCampaignInfo : IRequest<CommandResult>
     {
         public string Name { get; set; }
         public GetCampaignInfo(IList<string> parameters)
@@ -15,12 +16,12 @@ namespace HepsiBurada.Simulator.Commands
         }
     }
 
-    public class GetCampaignInfoHandler : IRequestHandler<GetCampaignInfo, Unit>
+    public class GetCampaignInfoHandler : IRequestHandler<GetCampaignInfo, CommandResult>
     {
-        public async Task<Unit> Handle(GetCampaignInfo GetCampaignInfo, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(GetCampaignInfo GetCampaignInfo, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("GetCampaignInfoHandler");
-            return await Task.FromResult(Unit.Value);
+            throw new NotImplementedException();
         }
 
     }

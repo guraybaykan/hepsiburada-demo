@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Globalization;
+using HepsiBurada.Simulator.Model;
 
 namespace HepsiBurada.Simulator.Commands
 {
-    public class CreateCampaing : IRequest<Unit>
+    public class CreateCampaing : IRequest<CommandResult>
     {
         public string Name { get; set; }
         public string ProductCode { get; set; }
@@ -25,12 +26,12 @@ namespace HepsiBurada.Simulator.Commands
         }
     }
 
-    public class CreateCampaingHandler : IRequestHandler<CreateCampaing, Unit>
+    public class CreateCampaingHandler : IRequestHandler<CreateCampaing, CommandResult>
     {
-        public async Task<Unit> Handle(CreateCampaing createCampaing, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(CreateCampaing createCampaing, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("CreateCampaingHandler");
-            return await Task.FromResult(Unit.Value);
+            throw new NotImplementedException();
         }
 
     }

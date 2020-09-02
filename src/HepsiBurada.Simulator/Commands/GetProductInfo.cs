@@ -3,10 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using HepsiBurada.Simulator.Model;
 
 namespace HepsiBurada.Simulator.Commands
 {
-    public class GetProductInfo : IRequest<Unit>
+    public class GetProductInfo : IRequest<CommandResult>
     {
         public string Code { get; set; }
         public GetProductInfo(IList<string> parameters)
@@ -15,12 +16,12 @@ namespace HepsiBurada.Simulator.Commands
         }
     }
 
-    public class GetProductInfoHandler : IRequestHandler<GetProductInfo, Unit>
+    public class GetProductInfoHandler : IRequestHandler<GetProductInfo, CommandResult>
     {
-        public async Task<Unit> Handle(GetProductInfo createProduct, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(GetProductInfo createProduct, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("GetProductInfoHandler");
-            return await Task.FromResult(Unit.Value);
+            throw new NotImplementedException();
         }
 
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Autofac;
 using MediatR;
 using HepsiBurada.Simulator.Commands;
+using HepsiBurada.Simulator.Model;
 
 
 namespace HepsiBurada.Simulator
@@ -43,7 +44,12 @@ namespace HepsiBurada.Simulator
 
                     foreach (CommandProto command in commandList)
                     {
-                        await RunCommand(command);
+                        var result = await RunCommand(command);
+                        if(!result.IsSucced)
+                        {
+                            throw new OperationCanceledException($"{command.CommandType} step is not succeed. Aborting.");
+                        }
+                        System.Console.WriteLine(result.Output);
                     }
                 }
                 System.Console.WriteLine("Simulation run is successfull");
@@ -55,7 +61,6 @@ namespace HepsiBurada.Simulator
             }
 
         }
-
         static string GetFilePath(string[] args)
         {
             if (args is null || args.Length == 0)
@@ -70,8 +75,6 @@ namespace HepsiBurada.Simulator
             }
             return filePath;
         }
-
-
         static async IAsyncEnumerable<string> GetLine(string filePath)
         {
             StreamReader sr = new StreamReader(filePath);
@@ -83,7 +86,19 @@ namespace HepsiBurada.Simulator
             } while (!sr.EndOfStream);
             sr.Dispose();
         }
-
+        static async Task<CommandResult> RunCommand(CommandProto commandProto)
+        {
+            return commandProto.CommandType switch
+            {
+                CommandType.create_campaign => await _mediator.Send(new CreateCampaing(commandProto.Parameters)),
+                CommandType.create_order => await _mediator.Send(new CreateOrder(commandProto.Parameters)),
+                CommandType.create_product => await _mediator.Send(new CreateProduct(commandProto.Parameters)),
+                CommandType.get_campaign_info => await _mediator.Send(new GetCampaignInfo(commandProto.Parameters)),
+                CommandType.get_product_info => await _mediator.Send(new GetProductInfo(commandProto.Parameters)),
+                CommandType.increase_time => await _mediator.Send(new IncreaseTime(commandProto.Parameters)),
+                _ => throw new InvalidOperationException("Code is not implementes")
+            };
+        }
         static void RegisterDI()
         {
             var builder = new ContainerBuilder();
@@ -102,32 +117,6 @@ namespace HepsiBurada.Simulator
             _container = builder.Build();
         }
 
-        static async Task RunCommand(CommandProto commandProto)
-        {
-            switch (commandProto.CommandType)
-            {
-                case CommandType.create_campaign:
-                    await _mediator.Send(new CreateCampaing(commandProto.Parameters));
-                    break;
-                case CommandType.create_order:
-                    await _mediator.Send(new CreateOrder(commandProto.Parameters));
-                    break;
-                case CommandType.create_product:
-                    await _mediator.Send(new CreateProduct(commandProto.Parameters));
-                    break;
-                case CommandType.get_campaign_info:
-                    await _mediator.Send(new GetCampaignInfo(commandProto.Parameters));
-                    break;
-                case CommandType.get_product_info:
-                    await _mediator.Send(new GetProductInfo(commandProto.Parameters));
-                    break;
-                case CommandType.increase_time:
-                    await _mediator.Send(new IncreaseTime(commandProto.Parameters));
-                    break;
-                default:
-                    break;
-            }
-        }
 
     }
 }

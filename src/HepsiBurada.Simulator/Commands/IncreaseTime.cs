@@ -3,10 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using HepsiBurada.Simulator.Model;
 
 namespace HepsiBurada.Simulator.Commands
 {
-    public class IncreaseTime : IRequest<Unit>
+    public class IncreaseTime : IRequest<CommandResult>
     {
         public int Hour { get; set; }
         public IncreaseTime(IList<string> parameters)
@@ -15,12 +16,12 @@ namespace HepsiBurada.Simulator.Commands
         }
     }
 
-    public class IncreaseTimeHandler : IRequestHandler<IncreaseTime, Unit>
+    public class IncreaseTimeHandler : IRequestHandler<IncreaseTime, CommandResult>
     {
-        public async Task<Unit> Handle(IncreaseTime createProduct, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(IncreaseTime createProduct, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("IncreaseTimeHandler");
-            return await Task.FromResult(Unit.Value);
+            throw new NotImplementedException();
         }
 
     }
