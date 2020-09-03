@@ -18,7 +18,6 @@ namespace HepsiBurada.Infrastructure.Persistence
         public async Task<T> Get(TKey id, CancellationToken cancellationToken)
         {
             return await _session.CreateCriteria<T>().Add(Restrictions.IdEq(id)).UniqueResultAsync<T>();
-
         }
 
         public async Task<IList<T>> GetAll(CancellationToken cancellationToken)
