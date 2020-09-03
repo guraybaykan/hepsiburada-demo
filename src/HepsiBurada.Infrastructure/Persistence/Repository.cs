@@ -1,34 +1,56 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using HepsiBurada.Core.Persistence;
+using NHibernate;
+using NHibernate.Criterion;
 
 namespace HepsiBurada.Infrastructure.Persistence
 {
-    public abstract class Repository<T, TKey> : IRepository<T, TKey>
+    public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : class
     {
-        public Task<T> Delete(TKey id)
+        protected readonly ISession _session;
+        public Repository(ISession session)
         {
-            throw new System.NotImplementedException();
+            _session = session;
         }
 
-        public Task<T> Get(TKey id)
+        public async Task<T> Get(TKey id, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _session.CreateCriteria<T>().Add(Restrictions.IdEq(id)).UniqueResultAsync<T>();
+
         }
 
-        public Task<IList<T>> GetAll()
+        public async Task<IList<T>> GetAll(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _session.CreateCriteria<T>().ListAsync<T>();
         }
 
-        public Task<T> Save(T entity)
+        public async Task<T> Save(T entity, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            using (var transaction = _session.BeginTransaction())
+            {
+                var saved = await _session.SaveAsync(entity, cancellationToken) as T;
+                await transaction.CommitAsync();
+                return saved;
+            }
         }
 
-        public Task<T> Update(T entity)
+        public async Task Update(T entity, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            using (var transaction = _session.BeginTransaction())
+            {
+                await _session.UpdateAsync(entity, cancellationToken);
+                await transaction.CommitAsync();
+            }
+        }
+        public async Task Delete(T entity, CancellationToken cancellationToken)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                await _session.DeleteAsync(entity, cancellationToken);
+                await transaction.CommitAsync();
+            }
         }
     }
 }
