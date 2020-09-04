@@ -2,7 +2,7 @@ using HepsiBurada.Core.Model;
 
 namespace HepsiBurada.Core.Persistence
 {
-    public interface IProductRepository : IRepository<Product, int>
+    public interface IProductRepository : IRepository<Product, string>
     {
     }
 }

@@ -21,9 +21,9 @@ namespace HepsiBurada.Service.Queries
             _productService = productService;
         }
 
-        public Task<Product> Handle(GetProductInfoQuery request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(GetProductInfoQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _productService.GetProduct(request.Code, cancellationToken);
         }
     }
 }

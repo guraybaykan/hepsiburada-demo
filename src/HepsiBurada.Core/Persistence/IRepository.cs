@@ -8,7 +8,7 @@ namespace HepsiBurada.Core.Persistence
     {
         Task<T> Get(TKey id, CancellationToken cancellationToken);
         Task<IList<T>> GetAll(CancellationToken cancellationToken);
-        Task<T> Save(T entity, CancellationToken cancellationToken);
+        Task<TKey> Save(T entity, CancellationToken cancellationToken);
         Task Update(T entity, CancellationToken cancellationToken);
         Task Delete(T entity, CancellationToken cancellationToken);
 

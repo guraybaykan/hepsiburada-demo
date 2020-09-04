@@ -18,9 +18,11 @@ namespace HepsiBurada.Service.Commands
             _mapper = mapper;
             _productService = productService;
         }
-        public Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var mappedRequest = _mapper.Map<Product>(request);
+            var response = await _productService.CreateProduct(mappedRequest, cancellationToken);
+            return response;
         }
     }
 }

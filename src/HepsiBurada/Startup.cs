@@ -26,8 +26,12 @@ namespace HepsiBurada
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddAutoMapper(this.GetType().Assembly);
-            services.AddMediatR(this.GetType().Assembly);
+            services.AddAutoMapper(this.GetType().Assembly,
+                typeof(Service.Initial).Assembly,
+                typeof(Infrastructure.Initial).Assembly
+                );
+            services.AddMediatR(typeof(Service.Initial).Assembly);
+            services.AddSwaggerGen();
             AddNHibernate(services);
             AddRepositories(services);
             AddServices(services);
@@ -42,6 +46,14 @@ namespace HepsiBurada
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HepsiBurada API V1");
+            });
+
 
             app.UseRouting();
 
@@ -59,25 +71,25 @@ namespace HepsiBurada
 
         private void AddRepositories(IServiceCollection services)
         {
-            var interfaces = from t in  typeof(HepsiBurada.Core.Initial).Assembly.GetTypes()
-                        where t.IsInterface && typeof(IRepository).IsAssignableFrom(t) 
-                            && t != typeof(IRepository) 
-                            && t != typeof(IRepository<,>)
-                        select t;
+            var interfaces = from t in typeof(HepsiBurada.Core.Initial).Assembly.GetTypes()
+                             where t.IsInterface && typeof(IRepository).IsAssignableFrom(t)
+                                 && t != typeof(IRepository)
+                                 && t != typeof(IRepository<,>)
+                             select t;
 
-            var repositories = from t in  typeof(HepsiBurada.Infrastructure.Initial).Assembly.GetTypes()
-                        where t.IsClass
-                           && ! t.IsAbstract
-                           && typeof(IRepository).IsAssignableFrom(t)  
-                        select t;
+            var repositories = from t in typeof(HepsiBurada.Infrastructure.Initial).Assembly.GetTypes()
+                               where t.IsClass
+                                  && !t.IsAbstract
+                                  && typeof(IRepository).IsAssignableFrom(t)
+                               select t;
 
 
 
-            foreach( var interfaceItem in interfaces)
-            {                
+            foreach (var interfaceItem in interfaces)
+            {
                 foreach (var repoItem in repositories)
                 {
-                    if(interfaceItem.IsAssignableFrom(repoItem))
+                    if (interfaceItem.IsAssignableFrom(repoItem))
                     {
                         services.AddScoped(interfaceItem, repoItem);
                         break;
@@ -88,25 +100,24 @@ namespace HepsiBurada
 
         private void AddServices(IServiceCollection services)
         {
-            var interfaces = from t in  typeof(HepsiBurada.Core.Initial).Assembly.GetTypes()
-                        where t.IsInterface && typeof(IService).IsAssignableFrom(t) 
-                            && t != typeof(IService)
-                        select t;
+            var interfaces = from t in typeof(HepsiBurada.Core.Initial).Assembly.GetTypes()
+                             where t.IsInterface && typeof(IService).IsAssignableFrom(t)
+                                 && t != typeof(IService)
+                             select t;
 
-            var serviceImps = from t in  typeof(HepsiBurada.Service.Initial).Assembly.GetTypes()
-            where t.IsClass
-                && ! t.IsAbstract
-                && typeof(IService).IsAssignableFrom(t)  
-            select t;
+            var serviceImps = from t in typeof(HepsiBurada.Service.Initial).Assembly.GetTypes()
+                              where t.IsClass
+                                  && !t.IsAbstract
+                                  && typeof(IService).IsAssignableFrom(t)
+                              select t;
 
-            
-            foreach( var interfaceItem in interfaces)
-            {                
+
+            foreach (var interfaceItem in interfaces)
+            {
                 foreach (var serviceImp in serviceImps)
                 {
-                    if(interfaceItem.IsAssignableFrom(serviceImp))
+                    if (interfaceItem.IsAssignableFrom(serviceImp))
                     {
-                        System.Console.WriteLine(serviceImp.Name);
                         services.AddScoped(interfaceItem, serviceImp);
                         break;
                     }

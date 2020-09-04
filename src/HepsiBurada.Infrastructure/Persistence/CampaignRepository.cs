@@ -4,7 +4,7 @@ using NHibernate;
 
 namespace HepsiBurada.Infrastructure.Persistence
 {
-    public class CampaignRepository : Repository<Campaign, int>, ICampaignRepository
+    public class CampaignRepository : Repository<Campaign, string>, ICampaignRepository
     {
         public CampaignRepository(ISession session) : base(session)
         {

@@ -25,13 +25,13 @@ namespace HepsiBurada.Infrastructure.Persistence
             return await _session.CreateCriteria<T>().ListAsync<T>();
         }
 
-        public async Task<T> Save(T entity, CancellationToken cancellationToken)
+        public async Task<TKey> Save(T entity, CancellationToken cancellationToken)
         {
             using (var transaction = _session.BeginTransaction())
             {
-                var saved = await _session.SaveAsync(entity, cancellationToken) as T;
+                var saved = await _session.SaveAsync(entity, cancellationToken);
                 await transaction.CommitAsync();
-                return saved;
+                return (TKey)saved ;
             }
         }
 
