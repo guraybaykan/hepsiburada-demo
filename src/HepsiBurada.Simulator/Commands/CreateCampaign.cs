@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Globalization;
 using HepsiBurada.Simulator.Model;
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -28,6 +29,11 @@ namespace HepsiBurada.Simulator.Commands
 
     public class CreateCampaingHandler : IRequestHandler<CreateCampaing, CommandResult>
     {
+        private readonly HttpClient _client;
+        public CreateCampaingHandler(HttpClient client)
+        {
+            _client = client;
+        }
         public async Task<CommandResult> Handle(CreateCampaing createCampaing, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("CreateCampaingHandler");

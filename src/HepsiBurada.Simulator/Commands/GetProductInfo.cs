@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using HepsiBurada.Simulator.Model;
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -17,11 +18,23 @@ namespace HepsiBurada.Simulator.Commands
     }
 
     public class GetProductInfoHandler : IRequestHandler<GetProductInfo, CommandResult>
-    {
+    {        
+        private readonly HttpClient _client;
+        public GetProductInfoHandler(HttpClient client)
+        {
+            _client = client;
+        }
+
         public async Task<CommandResult> Handle(GetProductInfo createProduct, CancellationToken cancellationToken)
         {
-            System.Console.WriteLine("GetProductInfoHandler");
-            throw new NotImplementedException();
+            var result = await _client.GetAsync($"/product/{createProduct.Code}");
+
+            System.Console.WriteLine(result.StatusCode);
+            return new CommandResult
+            {
+                IsSucced = result.IsSuccessStatusCode,
+                Output = await result.Content.ReadAsStringAsync()
+            };
         }
 
     }

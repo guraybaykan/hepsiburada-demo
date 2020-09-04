@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using HepsiBurada.Simulator.Model;
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -18,9 +19,16 @@ namespace HepsiBurada.Simulator.Commands
 
     public class GetCampaignInfoHandler : IRequestHandler<GetCampaignInfo, CommandResult>
     {
+        private readonly HttpClient _client;
+        public GetCampaignInfoHandler(HttpClient client)
+        {
+            _client = client;
+        }
+
         public async Task<CommandResult> Handle(GetCampaignInfo GetCampaignInfo, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("GetCampaignInfoHandler");
+
             throw new NotImplementedException();
         }
 

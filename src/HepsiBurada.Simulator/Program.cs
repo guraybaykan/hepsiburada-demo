@@ -6,7 +6,7 @@ using Autofac;
 using MediatR;
 using HepsiBurada.Simulator.Commands;
 using HepsiBurada.Simulator.Model;
-
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator
 {
@@ -45,11 +45,11 @@ namespace HepsiBurada.Simulator
                     foreach (CommandProto command in commandList)
                     {
                         var result = await RunCommand(command);
-                        if(!result.IsSucced)
+                        if (!result.IsSucced)
                         {
                             throw new OperationCanceledException($"{command.CommandType} step is not succeed. Aborting.");
                         }
-                        System.Console.WriteLine(result.Output);
+                        System.Console.WriteLine($"{command.CommandType}>> {result.Output}");
                     }
                 }
                 System.Console.WriteLine("Simulation run is successfull");
@@ -102,6 +102,12 @@ namespace HepsiBurada.Simulator
         static void RegisterDI()
         {
             var builder = new ContainerBuilder();
+
+            builder.Register((ctx => new HttpClient() { BaseAddress = new Uri("http://localhost:5000/") }))
+                .Named<HttpClient>("client")
+                .As<HttpClient>()
+                .SingleInstance();
+
             builder
                 .RegisterType<Mediator>()
                 .As<IMediator>()
@@ -112,6 +118,7 @@ namespace HepsiBurada.Simulator
                 var c = context.Resolve<IComponentContext>();
                 return t => c.Resolve(t);
             });
+
 
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).AsImplementedInterfaces();
             _container = builder.Build();

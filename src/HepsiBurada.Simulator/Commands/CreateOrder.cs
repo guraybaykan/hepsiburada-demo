@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using HepsiBurada.Simulator.Model;
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -20,6 +21,12 @@ namespace HepsiBurada.Simulator.Commands
 
     public class CreateOrderHandler : IRequestHandler<CreateOrder, CommandResult>
     {
+        private readonly HttpClient _client;
+        public CreateOrderHandler(HttpClient client)
+        {
+            _client = client;
+        }
+
         public async Task<CommandResult> Handle(CreateOrder createOrder, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("CreateOrderHandler");

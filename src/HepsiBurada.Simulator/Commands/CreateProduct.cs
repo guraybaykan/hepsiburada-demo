@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Globalization;
 using HepsiBurada.Simulator.Model;
+using System.Net.Http;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -22,6 +23,12 @@ namespace HepsiBurada.Simulator.Commands
 
     public class CreateProductHandler : IRequestHandler<CreateProduct, CommandResult>
     {
+        private readonly HttpClient _client;
+        public CreateProductHandler(HttpClient client)
+        {
+            _client = client;
+        }
+
         public async Task<CommandResult> Handle(CreateProduct createProduct, CancellationToken cancellationToken)
         {
             System.Console.WriteLine("CreateProductHandler");
