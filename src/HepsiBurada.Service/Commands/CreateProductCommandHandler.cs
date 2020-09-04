@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using HepsiBurada.Core.Businness;
 using HepsiBurada.Core.Model;
+using HepsiBurada.Core.Persistence;
 using MediatR;
 
 namespace HepsiBurada.Service.Commands
@@ -11,18 +11,24 @@ namespace HepsiBurada.Service.Commands
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
     {
         private readonly IMapper _mapper;
-        private readonly IProductService _productService;
+        private readonly IProductRepository _productRepository;
         public CreateProductCommandHandler(IMapper mapper,
-            IProductService productService)
+            IProductRepository productRepository)
         {
             _mapper = mapper;
-            _productService = productService;
+            _productRepository = productRepository;
         }
         public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var mappedRequest = _mapper.Map<Product>(request);
-            var response = await _productService.CreateProduct(mappedRequest, cancellationToken);
-            return response;
+            var product = _mapper.Map<Product>(request);
+
+             //todo is it necessary to control. Code is ID actually
+            if(await _productRepository.Get(product.Code, cancellationToken) != null)
+            {
+                throw new System.Exception($"product {product.Code} has already been defined");
+            }
+            product.Code = await _productRepository.Save(product, cancellationToken);
+            return product;
         }
     }
 }

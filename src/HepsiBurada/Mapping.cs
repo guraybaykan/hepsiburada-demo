@@ -12,6 +12,8 @@ namespace HepsiBurada
         {
             CreateMap<Product, ProductResponse>();
             CreateMap< ProductRequest, CreateProductCommand>();
+
+            
         }
     }
 }

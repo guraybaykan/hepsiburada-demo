@@ -5,5 +5,6 @@ namespace HepsiBurada.Core.Model
         public virtual string Code { get; set; }
         public virtual decimal Price { get; set; }
         public virtual int Stock { get; set; }
+        public virtual Campaign Campaign { get; set; }
     }
 }

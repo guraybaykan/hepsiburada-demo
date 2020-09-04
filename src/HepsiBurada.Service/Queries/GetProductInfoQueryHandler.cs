@@ -1,9 +1,8 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using HepsiBurada.Core.Businness;
 using HepsiBurada.Core.Model;
+using HepsiBurada.Core.Persistence;
 using MediatR;
 
 namespace HepsiBurada.Service.Queries
@@ -12,18 +11,18 @@ namespace HepsiBurada.Service.Queries
     
     {
         private readonly IMapper _mapper;
-        private readonly IProductService _productService;
+        private readonly IProductRepository _productRepository;
 
         public GetProductInfoQueryHandler(IMapper mapper,
-            IProductService productService)
+            IProductRepository productRepository)
         {
             _mapper = mapper;
-            _productService = productService;
+            _productRepository = productRepository;
         }
 
         public async Task<Product> Handle(GetProductInfoQuery request, CancellationToken cancellationToken)
         {
-            return await _productService.GetProduct(request.Code, cancellationToken);
+            return await _productRepository.Get(request.Code, cancellationToken);
         }
     }
 }

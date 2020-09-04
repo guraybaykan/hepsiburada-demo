@@ -9,7 +9,9 @@ namespace HepsiBurada.Infrastructure.Mapping
         {
             Id(x => x.Id);
             Map(x => x.Quantity);
-            References<Product>(x => x.Product).LazyLoad();
+            Map(x => x.CreatedAt);
+            HasOne(x => x.Product).LazyLoad();
+            HasOne(x => x.Campaign).LazyLoad();
         }
     }
 }

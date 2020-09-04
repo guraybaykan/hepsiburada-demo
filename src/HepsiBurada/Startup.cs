@@ -9,7 +9,6 @@ using MediatR;
 using HepsiBurada.Infrastructure;
 using NHibernate;
 using HepsiBurada.Core.Persistence;
-using HepsiBurada.Core.Businness;
 
 namespace HepsiBurada
 {
@@ -34,7 +33,6 @@ namespace HepsiBurada
             services.AddSwaggerGen();
             AddNHibernate(services);
             AddRepositories(services);
-            AddServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,32 +94,5 @@ namespace HepsiBurada
             }
         }
 
-        private void AddServices(IServiceCollection services)
-        {
-            var interfaces = from t in typeof(HepsiBurada.Core.Initial).Assembly.GetTypes()
-                             where t.IsInterface && typeof(IService).IsAssignableFrom(t)
-                                 && t != typeof(IService)
-                             select t;
-
-            var serviceImps = from t in typeof(HepsiBurada.Service.Initial).Assembly.GetTypes()
-                              where t.IsClass
-                                  && !t.IsAbstract
-                                  && typeof(IService).IsAssignableFrom(t)
-                              select t;
-
-
-            foreach (var interfaceItem in interfaces)
-            {
-                foreach (var serviceImp in serviceImps)
-                {
-                    if (interfaceItem.IsAssignableFrom(serviceImp))
-                    {
-                        services.AddScoped(interfaceItem, serviceImp);
-                        break;
-                    }
-                }
-            }
-
-        }
     }
 }

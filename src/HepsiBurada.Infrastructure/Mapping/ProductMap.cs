@@ -10,6 +10,7 @@ namespace HepsiBurada.Infrastructure.Mapping
             Id(x => x.Code).GeneratedBy.Assigned();
             Map(x => x.Price);
             Map(x => x.Stock);
+            HasOne(x => x.Campaign).LazyLoad();
         }
     }
 }

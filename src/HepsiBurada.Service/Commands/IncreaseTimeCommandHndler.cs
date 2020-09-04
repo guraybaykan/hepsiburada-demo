@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using HepsiBurada.Core.Businness;
+using HepsiBurada.Core.Persistence;
 using MediatR;
 
 namespace HepsiBurada.Service.Commands
@@ -10,16 +10,23 @@ namespace HepsiBurada.Service.Commands
     public class IncreaseTimeCommandHAndler : IRequestHandler<IncreaseTimeCommand>
     {
         private readonly IMapper _mapper;
-        private readonly ITimeService _timerService;
+        private readonly IMediator _mediator;
+        private readonly ITimeRepository _timeRepository;
         public IncreaseTimeCommandHAndler(IMapper mapper,
-            ITimeService timeService)
+            IMediator mediator,
+            ITimeRepository timeRepository)
         {
             _mapper = mapper;
-            _timerService = timeService;
+            _mediator = mediator; 
+            _timeRepository = timeRepository;
         }
-        public Task<Unit> Handle(IncreaseTimeCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(IncreaseTimeCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _timeRepository.IncreaseDate(request.Hour, cancellationToken);
+
+            //todo: mediator publish timeIncreased
+
+            return Unit.Value;
         }
     }
 }
