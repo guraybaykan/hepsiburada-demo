@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System;
 using HepsiBurada.Simulator.Model;
 using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -25,10 +27,17 @@ namespace HepsiBurada.Simulator.Commands
             _client = client;
         }
 
-        public async Task<CommandResult> Handle(IncreaseTime createProduct, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(IncreaseTime increaseTime, CancellationToken cancellationToken)
         {
-            System.Console.WriteLine("IncreaseTimeHandler");
-            throw new NotImplementedException();
+            var json = JsonConvert.SerializeObject(increaseTime);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = await _client.PutAsync($"/time/increase", data, cancellationToken);
+
+            return new CommandResult
+            {
+                IsSucced = result.IsSuccessStatusCode,
+                Output = await result.Content.ReadAsStringAsync()
+            };
         }
 
     }

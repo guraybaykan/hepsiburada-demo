@@ -28,8 +28,6 @@ namespace HepsiBurada.Simulator.Commands
         public async Task<CommandResult> Handle(GetProductInfo createProduct, CancellationToken cancellationToken)
         {
             var result = await _client.GetAsync($"/product/{createProduct.Code}");
-
-            System.Console.WriteLine(result.StatusCode);
             return new CommandResult
             {
                 IsSucced = result.IsSuccessStatusCode,

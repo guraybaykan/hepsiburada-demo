@@ -13,5 +13,8 @@ namespace HepsiBurada.Core.Model
         public virtual decimal Turnover {get;set;}
         public virtual decimal AverageItemPrice {get; set;}
         public virtual DateTime StartDate { get; set; }
+        public virtual DateTime EndDate { get; set; }
+        public virtual bool IsActive { get; set; }
+        public virtual decimal StartPrice { get; set; }
     }
 }

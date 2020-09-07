@@ -10,6 +10,7 @@ namespace HepsiBurada.Service
         public Mapping()
         {
             CreateMap<CreateProductCommand, Product>();
+            CreateMap<CreateCampaignCommand, Campaign>();
         }
     }
 }

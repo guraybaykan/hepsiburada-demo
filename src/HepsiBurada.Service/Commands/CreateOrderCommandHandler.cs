@@ -58,7 +58,10 @@ namespace HepsiBurada.Service.Commands
 
             await _mediator.Publish(new OrderCreatedNotification
             {
-
+                OrderId = order.Id,
+                Quantity = order.Quantity,
+                Price = order.Price,
+                CampaignName = campaign.Name
             });
 
             return order;

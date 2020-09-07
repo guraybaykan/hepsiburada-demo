@@ -15,24 +15,14 @@ namespace HepsiBurada.Infrastructure.Persistence
             
         }
 
-        public async Task<DateTime> GetCurrentDate(CancellationToken cancellationToken)
+        public async Task<Time> GetCurrentDate(CancellationToken cancellationToken)
         {
-            var result= await _session.CreateCriteria<Time>()
-                .SetProjection(Projections.Max("TimeStamp"))
-                .UniqueResultAsync<Time>();
+            var result = _session.CreateCriteria<Time>()
+                .AddOrder(NHibernate.Criterion.Order.Desc("TimeStamp"))
+                .SetMaxResults(1)
+                .UniqueResult<Time>();
 
-            return result.TimeStamp;
-        }
-
-        public async Task<DateTime> IncreaseDate(int hour, CancellationToken cancellationToken)
-        {
-            var date = await GetCurrentDate(cancellationToken);
-            var time = new Time
-            {
-                TimeStamp = date.AddHours(hour)
-            };
-            time.Id = await Save(time, cancellationToken);
-            return time.TimeStamp;
+            return await Task.FromResult(result);
         }
     }
 }

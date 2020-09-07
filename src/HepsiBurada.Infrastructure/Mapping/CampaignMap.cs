@@ -1,4 +1,3 @@
-using System;
 using FluentNHibernate.Mapping;
 using HepsiBurada.Core.Model;
 
@@ -16,6 +15,9 @@ namespace HepsiBurada.Infrastructure.Mapping
             Map(x => x.Turnover);
             Map(x => x.AverageItemPrice);
             Map(x => x.StartDate);
+            Map(x => x.EndDate);
+            Map(x => x.IsActive);
+            Map(x => x.StartPrice);
             References<Product>(x => x.Product).LazyLoad();
         }
     }

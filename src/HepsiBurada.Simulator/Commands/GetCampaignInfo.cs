@@ -25,11 +25,14 @@ namespace HepsiBurada.Simulator.Commands
             _client = client;
         }
 
-        public async Task<CommandResult> Handle(GetCampaignInfo GetCampaignInfo, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(GetCampaignInfo getCampaignInfo, CancellationToken cancellationToken)
         {
-            System.Console.WriteLine("GetCampaignInfoHandler");
-
-            throw new NotImplementedException();
+            var result = await _client.GetAsync($"/campaign/{getCampaignInfo.Name}");
+            return new CommandResult
+            {
+                IsSucced = result.IsSuccessStatusCode,
+                Output = await result.Content.ReadAsStringAsync()
+            };
         }
 
     }

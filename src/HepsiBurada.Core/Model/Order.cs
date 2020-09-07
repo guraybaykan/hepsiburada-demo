@@ -9,6 +9,6 @@ namespace HepsiBurada.Core.Model
         public virtual int Quantity { get; set; }
         public virtual decimal Price { get; set; }
         public virtual Campaign Campaign {get; set;}
-        public DateTime CreatedAt {get; set;}
+        public virtual DateTime CreatedAt {get; set;}
     }
 }

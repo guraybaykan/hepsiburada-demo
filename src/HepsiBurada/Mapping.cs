@@ -13,6 +13,14 @@ namespace HepsiBurada
             CreateMap<Product, ProductResponse>();
             CreateMap< ProductRequest, CreateProductCommand>();
 
+            CreateMap<CampaignRequest, CreateCampaignCommand>();
+            CreateMap<Campaign, CampaignResponse>();
+
+            CreateMap<OrderRequest, CreateOrderCommand>();
+            CreateMap<Order, OrderResponse>();
+
+            CreateMap<TimeRequest, IncreaseTimeCommand>();
+            CreateMap<Time, TimeResponse>();
             
         }
     }

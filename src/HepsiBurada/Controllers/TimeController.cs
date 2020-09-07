@@ -23,11 +23,13 @@ namespace HepsiBurada.Controllers
         }
 
         [HttpPut, Route("increase")]
+        [ProducesResponseType(typeof(TimeResponse),StatusCodes.Status200OK)]
         public async Task<IActionResult> Put([FromBody] TimeRequest timeRequest)
         {
             var request = _mapper.Map<IncreaseTimeCommand>(timeRequest);
             var result = await _mediator.Send(request);
-            throw new NotImplementedException();
+            var mappedResult = _mapper.Map<TimeResponse>(result);
+            return Ok(mappedResult);
         }
 
         

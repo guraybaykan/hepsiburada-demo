@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HepsiBurada.Core.Model;
@@ -14,12 +15,21 @@ namespace HepsiBurada.Infrastructure.Persistence
         {
         }
 
-        public async Task<Campaign> CheckActiveCampaign(string productCode, DateTime date, CancellationToken cancellationToken)
+        public async Task<Campaign> CheckActiveCampaign(string productCode, DateTime now, CancellationToken cancellationToken)
         {
             return await _session.CreateCriteria<Campaign>()
-                .Add(Restrictions.Eq("ProductCode", productCode))
-                .Add(Restrictions.Eq("StartDate", date))
+                .Add(Restrictions.Eq("IsActive", true))
+                .Add(Restrictions.Eq("Product.Code", productCode))
+                .Add(Restrictions.Le("StartDate", now))
+                .Add(Restrictions.Ge("EndDate", now))
                 .UniqueResultAsync<Campaign>();
         }
+        public async Task<IList<Campaign>> GetActiveFlaggedCampaigns(CancellationToken cancellationToken)
+        {
+            return await _session.CreateCriteria<Campaign>()
+                .Add(Restrictions.Eq("IsActive", true))
+                .ListAsync<Campaign>();
+        }
+
     }
 }
