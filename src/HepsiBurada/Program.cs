@@ -16,5 +16,6 @@ namespace HepsiBurada
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
     }
 }

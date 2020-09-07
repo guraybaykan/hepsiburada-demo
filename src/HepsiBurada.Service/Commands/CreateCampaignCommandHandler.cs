@@ -14,7 +14,6 @@ namespace HepsiBurada.Service.Commands
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-
         private readonly ICampaignRepository _campaignRepository;
         public CreateCampaignCommandHandler(IMapper mapper,
             IMediator mediator,
@@ -38,12 +37,14 @@ namespace HepsiBurada.Service.Commands
                 Code = request.ProductCode
             });
 
+            var currentTime = await _mediator.Send(new GetCurrentTimeQuery());
+
             campaign.AverageItemPrice = 0;
-            campaign.TotalSales = 0;
+            campaign.TotalSalesCount = 0;
             campaign.Turnover = 0;
-            campaign.TargetSales = request.TargetSalesCount;
-            campaign.StartDate = DateTime.Now;
-            campaign.EndDate = DateTime.Now.AddHours(request.DurationInHour);
+            campaign.TargetSalesCount = request.TargetSalesCount;
+            campaign.StartDate = currentTime.TimeStamp;
+            campaign.EndDate = currentTime.TimeStamp.AddHours(request.DurationInHour);
             campaign.IsActive = true;
             campaign.Product = product;
             campaign.StartPrice = product.Price;

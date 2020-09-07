@@ -25,20 +25,14 @@ namespace HepsiBurada.Service.Commands
         public async Task<Time> Handle(IncreaseTimeCommand request, CancellationToken cancellationToken)
         {
             var now = await _timeRepository.GetCurrentDate(cancellationToken);
-            if (now is null)
-            {
-                now = new Core.Model.Time { TimeStamp = DateTime.Now };
-                await _timeRepository.Save(now, cancellationToken); ;
-                return now;
-            }
 
             now.TimeStamp = now.TimeStamp.AddHours(request.Hour);
-            await _timeRepository.Save(now, cancellationToken);
+            await _timeRepository.Update(now, cancellationToken);
 
             await _mediator.Publish(new TimeIncreasedNotification
             {
                 Now = now.TimeStamp
-            });
+            }, cancellationToken);
 
             return now;
         }

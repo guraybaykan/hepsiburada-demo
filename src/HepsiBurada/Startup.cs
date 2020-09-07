@@ -9,6 +9,7 @@ using MediatR;
 using HepsiBurada.Infrastructure;
 using NHibernate;
 using HepsiBurada.Core.Persistence;
+using HepsiBurada.Core.Notifications;
 
 namespace HepsiBurada
 {
@@ -58,6 +59,8 @@ namespace HepsiBurada
                 endpoints.MapControllers();
             });
         }
+
+
 
         private void AddNHibernate(IServiceCollection services)
         {

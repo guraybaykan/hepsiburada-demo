@@ -1,6 +1,6 @@
-namespace HepsiBurada.Model.Response
+namespace HepsiBurada.Simulator.ClientModel.Response
 {
-    public class CampaignResponse
+    public class CampaignInfoResponse
     {
         public string Name { get; set; }
         public string ProductCode { get; set; }

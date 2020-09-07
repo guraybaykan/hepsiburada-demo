@@ -27,7 +27,7 @@ namespace HepsiBurada.Service.Commands
 
         public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var reqTime = DateTime.Now;
+            var reqTime = await _mediator.Send(new GetCurrentTimeQuery());
 
             var product = await _mediator.Send(new GetProductInfoQuery
             {
@@ -42,7 +42,7 @@ namespace HepsiBurada.Service.Commands
             var campaign = await _mediator.Send(new CheckProductHasCampaignQuery
             {
                 ProductCode = request.ProductCode,
-                Date = reqTime
+                Date = reqTime.TimeStamp
             });
 
             var order = new Order
@@ -50,7 +50,7 @@ namespace HepsiBurada.Service.Commands
                 Price = product.Price,
                 Product = new Product { Code = request.ProductCode },
                 Quantity = request.Quantity,
-                CreatedAt = reqTime,
+                CreatedAt = reqTime.TimeStamp,
                 Campaign = campaign
             };
 

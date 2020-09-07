@@ -1,6 +1,6 @@
 using System;
 
-namespace HepsiBurada.Model.Response
+namespace HepsiBurada.Simulator.ClientModel.Response
 {
     public class TimeResponse
     {

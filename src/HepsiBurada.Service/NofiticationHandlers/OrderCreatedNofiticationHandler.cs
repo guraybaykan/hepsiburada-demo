@@ -32,7 +32,7 @@ namespace HepsiBurada.Service.NofiticationHandlers
             product.Stock -= notification.Quantity;
             await _productRepository.Update(product, cancellationToken);
 
-            if(campaign.TargetSales <= campaign.TotalSales)
+            if(campaign.TargetSalesCount <= campaign.TotalSalesCount)
             {
                 await _mediator.Publish(new CampaignFinishedNotification
                 {
@@ -44,9 +44,9 @@ namespace HepsiBurada.Service.NofiticationHandlers
         private void RecalculateCampaignData(ref Campaign campaign, OrderCreatedNotification notification)
         {
             var turnover = notification.Price * notification.Quantity;
-            var totalSales = campaign.TotalSales + notification.Quantity;
+            var totalSales = campaign.TotalSalesCount + notification.Quantity;
             campaign.AverageItemPrice = turnover / totalSales;
-            campaign.TotalSales = totalSales;
+            campaign.TotalSalesCount = totalSales;
             campaign.Turnover = turnover; 
         }
     }

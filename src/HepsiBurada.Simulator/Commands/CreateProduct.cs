@@ -8,6 +8,9 @@ using HepsiBurada.Simulator.Model;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
+using AutoMapper;
+using HepsiBurada.Simulator.Request;
+using HepsiBurada.Simulator.ClientModel.Response;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -27,22 +30,29 @@ namespace HepsiBurada.Simulator.Commands
     public class CreateProductHandler : IRequestHandler<CreateProduct, CommandResult>
     {
         private readonly HttpClient _client;
-        public CreateProductHandler(HttpClient client)
+        private readonly IMapper _mapper;
+
+        public CreateProductHandler(HttpClient client,
+            IMapper mapper)
         {
             _client = client;
+            _mapper = mapper;
         }
 
         public async Task<CommandResult> Handle(CreateProduct createProduct, CancellationToken cancellationToken)
         {
-            var json = JsonConvert.SerializeObject(createProduct);
+            var mappedRequest = _mapper.Map<ProductRequest>(createProduct);
+            var json = JsonConvert.SerializeObject(mappedRequest);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            var result = await _client.PostAsync($"/product", data, cancellationToken);
+            var httpResult = await _client.PostAsync($"/product", data, cancellationToken);
 
-            return new CommandResult
+            if(!httpResult.IsSuccessStatusCode)
             {
-                IsSucced = result.IsSuccessStatusCode,
-                Output = await result.Content.ReadAsStringAsync()
-            };
+                return new CommandResult {IsSucceed = false};
+            }
+            var output = _mapper.Map<CommandResult>(JsonConvert.DeserializeObject<ProductResponse>(await httpResult.Content.ReadAsStringAsync()));
+            output.IsSucceed = true;
+            return output;
         }
 
     }

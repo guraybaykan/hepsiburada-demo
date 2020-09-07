@@ -7,6 +7,8 @@ using MediatR;
 using HepsiBurada.Simulator.Commands;
 using HepsiBurada.Simulator.Model;
 using System.Net.Http;
+using AutoMapper;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 
 namespace HepsiBurada.Simulator
 {
@@ -45,7 +47,7 @@ namespace HepsiBurada.Simulator
                     foreach (CommandProto command in commandList)
                     {
                         var result = await RunCommand(command);
-                        if (!result.IsSucced)
+                        if (!result.IsSucceed)
                         {
                             throw new OperationCanceledException($"{command.CommandType} step is not succeed. Aborting.");
                         }
@@ -119,6 +121,7 @@ namespace HepsiBurada.Simulator
                 return t => c.Resolve(t);
             });
 
+            builder.AddAutoMapper(typeof(Program).Assembly);
 
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).AsImplementedInterfaces();
             _container = builder.Build();

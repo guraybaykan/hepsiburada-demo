@@ -8,6 +8,9 @@ using HepsiBurada.Simulator.Model;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
+using AutoMapper;
+using HepsiBurada.Simulator.Request;
+using HepsiBurada.Simulator.ClientModel.Response;
 
 namespace HepsiBurada.Simulator.Commands
 {
@@ -32,21 +35,28 @@ namespace HepsiBurada.Simulator.Commands
     public class CreateCampaingHandler : IRequestHandler<CreateCampaing, CommandResult>
     {
         private readonly HttpClient _client;
-        public CreateCampaingHandler(HttpClient client)
+        private readonly IMapper _mapper;
+
+        public CreateCampaingHandler(HttpClient client,
+            IMapper mapper)
         {
             _client = client;
+            _mapper = mapper;
         }
         public async Task<CommandResult> Handle(CreateCampaing createCampaing, CancellationToken cancellationToken)
         {
-            var json = JsonConvert.SerializeObject(createCampaing);
+            var mappedRequest = _mapper.Map<CampaignRequest>(createCampaing);
+            var json = JsonConvert.SerializeObject(mappedRequest);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            var result = await _client.PostAsync($"/campaign/", data, cancellationToken);
-            
-            return new CommandResult
+            var httpResult = await _client.PostAsync($"/campaign/", data, cancellationToken);
+
+            if(!httpResult.IsSuccessStatusCode)
             {
-                IsSucced = result.IsSuccessStatusCode,
-                Output = await result.Content.ReadAsStringAsync()
-            };
+                return new CommandResult {IsSucceed = false};
+            }
+            var output = _mapper.Map<CommandResult>(JsonConvert.DeserializeObject<CampaignResponse>(await httpResult.Content.ReadAsStringAsync()));
+            output.IsSucceed = true;
+            return output;
         }
 
     }
