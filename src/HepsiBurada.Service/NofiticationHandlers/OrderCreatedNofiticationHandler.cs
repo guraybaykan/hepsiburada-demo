@@ -24,8 +24,8 @@ namespace HepsiBurada.Service.NofiticationHandlers
         }
         public async Task Handle(OrderCreatedNotification notification, CancellationToken cancellationToken)
         {
-            var campaign = await _campaignRepository.Get(notification.CampaignName, cancellationToken);
-            RecalculateCampaignData(ref campaign, notification);
+            var campaignResult = await _campaignRepository.Get(notification.CampaignName, cancellationToken);
+            var campaign = await RecalculateCampaignData(campaignResult, notification);
             await _campaignRepository.Update(campaign, cancellationToken);
 
             var product = await _productRepository.Get(campaign.Product.Code, cancellationToken);
@@ -41,13 +41,14 @@ namespace HepsiBurada.Service.NofiticationHandlers
             }
         }
 
-        private void RecalculateCampaignData(ref Campaign campaign, OrderCreatedNotification notification)
+        private async Task<Campaign> RecalculateCampaignData(Campaign campaign, OrderCreatedNotification notification)
         {
             var turnover = notification.Price * notification.Quantity;
             var totalSales = campaign.TotalSalesCount + notification.Quantity;
             campaign.AverageItemPrice = turnover / totalSales;
             campaign.TotalSalesCount = totalSales;
             campaign.Turnover = turnover; 
+            return await Task.FromResult(campaign);
         }
     }
 }
